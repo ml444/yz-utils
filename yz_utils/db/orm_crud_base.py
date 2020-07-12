@@ -81,10 +81,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             sort = [text(s) for s in sort]
         if opt:
             return db.query(self.model).filter_by(
-                **opt).offset(offset).limit(limit).order_by(sort).all()
+                **opt).order_by(sort).offset(offset).limit(limit).all()
         else:
-            return db.query(self.model).offset(
-                offset).limit(limit).order_by(sort).all()
+            return db.query(self.model).order_by(sort).offset(
+                offset).limit(limit).all()
 
     def create(
             self, db: Session, *,
