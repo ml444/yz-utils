@@ -82,7 +82,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def list(
             self, db: Session, *,
             opt: Union[Dict, List] = None,
-            sort: List[str] = None,
+            sort: List[str] = list(),
             offset: int = 0,
             limit: int = 10
     ) -> List[ModelType]:
