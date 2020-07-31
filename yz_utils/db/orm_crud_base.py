@@ -167,6 +167,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             return obj
         else:
             del_count = db.query(self.model).filter(
-                self.model.id == id).delete()
+                self.model.id == id).delete(synchronize_session=False)
             db.commit()
             return del_count
