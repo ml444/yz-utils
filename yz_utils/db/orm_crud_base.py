@@ -13,8 +13,9 @@ try:
     from sqlalchemy.orm import Session
     from sqlalchemy.ext.declarative import as_declarative, declared_attr
 except ModuleNotFoundError:
-    print('''==> Warning: 
-    if you need to use this module, please install sqlalchemy.''')
+    print(f'''==> Warning: 
+        if you need to use this module: {__file__}, 
+        please: pip install sqlalchemy==1.3.16+''')
 else:
     @as_declarative()
     class Base:
@@ -213,5 +214,3 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # db.commit()
         return deleted_count
 
-if __name__ == '__main__':
-    print(111)
