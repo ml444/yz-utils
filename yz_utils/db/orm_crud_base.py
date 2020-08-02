@@ -8,21 +8,26 @@
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 
 from pydantic import BaseModel
-from sqlalchemy import text
-from sqlalchemy.orm import Session
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from .encoders import jsonable_encoder
+try:
+    from sqlalchemy import text
+    from sqlalchemy.orm import Session
+    from sqlalchemy.ext.declarative import as_declarative, declared_attr
+except ModuleNotFoundError:
+    print('''==> Warning: 
+    if you need to use this module, please install sqlalchemy.''')
+else:
+    @as_declarative()
+    class Base:
+        # Generate __tablename__ automatically
+        @declared_attr
+        def __tablename__(cls) -> str:
+            return cls.__name__.lower()
+
+        id: Any
+        __name__: str
 
 
-@as_declarative()
-class Base:
-    # Generate __tablename__ automatically
-    @declared_attr
-    def __tablename__(cls) -> str:
-        return cls.__name__.lower()
-
-    id: Any
-    __name__: str
+from yz_utils.db.encoders import jsonable_encoder
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -207,3 +212,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         # [db.delete(db.query(self.model).get(_id)) for _id in ids]
         # db.commit()
         return deleted_count
+
+if __name__ == '__main__':
+    print(111)
