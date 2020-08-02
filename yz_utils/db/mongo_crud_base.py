@@ -12,8 +12,10 @@ try:
     from pymongo import InsertOne, DeleteOne, ReplaceOne, UpdateMany, UpdateOne
     from pymongo.collection import Collection
     from pymongo import MongoClient
-except Exception as e:
-    print('Need to import pymongo module.')
+except ModuleNotFoundError:
+    print(f'''==> Warning: 
+        if you need to use this module: {__file__}, 
+        please: pip install pymongo==3.10.1+''')
 
 
 ModelType = TypeVar("ModelType", bound=str)
@@ -56,8 +58,11 @@ class NosqlCRUDBase(Generic[CreateSchemaType, UpdateSchemaType]):
         opt.update({"isDelete": False})
         return self.collection.find_one(opt)
 
-    def list(self, opt: dict = None, select_col: DictorList = None,
-             limit: int = 0, offset: int = 0, sort: List[tuple] = None):
+    def list(self,
+             opt: dict = None,
+             select_col: DictorList = None,
+             limit: int = 0, offset: int = 0,
+             sort: List[tuple] = None):
         """
         `projection`（可选）：应在结果集中返回的字段名列表，或指定要包含或排除的字段的dict。
         如果“projection”是一个列表，则始终返回“_id”。使用dict从结果中排除字段
