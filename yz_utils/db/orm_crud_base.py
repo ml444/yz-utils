@@ -75,7 +75,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             results = db.query(self.model).filter_by(**kwargs).count()
         return results
 
-    def get(self, db: Session, id: Any) -> Optional[ModelType]:
+    def get(self, db: Session, id: Any = None, **kwargs) -> Optional[ModelType]:
         """
         主键查询
 
@@ -83,12 +83,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         :param id:
         :return:
         """
+        if not id and kwargs:
+            return db.query(self.model).filter_by(**kwargs).one_or_none()
         return db.query(self.model).get(id)
 
     def list(
             self, db: Session, *,
             opt: Union[Dict, List] = None,
-            sort: List[str] = list(),
+            sort: List[str] = None,
             offset: int = 0,
             limit: int = 10
     ) -> List[ModelType]:
@@ -104,6 +106,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         if sort:
             sort = [text(s) for s in sort]
+        else:
+            sort = []
         if opt and isinstance(opt, dict):
             return db.query(self.model).filter_by(
                 **opt).order_by(*sort).offset(offset).limit(limit).all()
